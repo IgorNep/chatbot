@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import axios from 'axios';
@@ -17,11 +17,11 @@ import {
   useSaveChatMutation,
 } from '../features/chat';
 import ChatMessage from '../components/ChatMessage';
-import { Button, EIconPosition } from '../components/Button';
+import { Button } from '../components/Button';
 import { EIcons, Icon } from '../components/Icon';
+import { ChatForm, TEventSubmitProps } from '../components/ChatForm';
 
 export const ChatContainer = () => {
-  const [input, setInput] = useState('');
   const dispatch = useDispatch();
   const currentChatId = useSelector(selectCurrentChatId);
   const messages = useSelector(selectMessages);
@@ -51,14 +51,15 @@ export const ChatContainer = () => {
     }
   }, []);
 
-  const handleSubmit = async (
-    e: SyntheticEvent<HTMLFormElement, SubmitEvent>,
-  ) => {
+  const handleSubmit = async (e: TEventSubmitProps, textInput: string) => {
     e.preventDefault();
-    if (input) {
-      const newMessage = { id: uuidv4(), role: 'user', content: `${input}` };
+    if (textInput) {
+      const newMessage = {
+        id: uuidv4(),
+        role: 'user',
+        content: `${textInput}`,
+      };
       dispatch(setMessages(newMessage));
-      setInput('');
 
       const savedChatFromLS = JSON.parse(
         localStorage.getItem('savedChat') || '{}',
@@ -78,7 +79,7 @@ export const ChatContainer = () => {
 
       try {
         const res = await axios.post(import.meta.env.VITE_BASE_URL, {
-          message: input,
+          message: textInput,
         });
 
         const { id, choices } = res.data.response;
@@ -135,6 +136,7 @@ export const ChatContainer = () => {
   useEffect(() => {
     focusInput();
   }, []);
+
   return (
     <>
       <aside className='w-[240px] p-4 bg-[#202123] text-center'>
@@ -190,24 +192,7 @@ export const ChatContainer = () => {
           <div ref={bottomRefPanel}></div>
         </div>
         <div className='absolute bottom-0 left-0 right-0'>
-          <form onSubmit={handleSubmit}>
-            <div className='relative h-[60px] w-[80%] my-10 mx-auto'>
-              <input
-                ref={inputRef}
-                className='bg-[#40414f] w-full h-full py-0 px-4 text-white text-sm border-none outline-none shadow-black'
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder='Type your message...'
-              />
-              <Button
-                title='Send'
-                disabled={!input}
-                className='absolute top-2 right-2'
-                icon={<Icon icon={EIcons.SEND} />}
-                iconposition={EIconPosition.RIGHT}
-              />
-            </div>
-          </form>
+          <ChatForm onSubmit={handleSubmit} ref={inputRef} />
         </div>
       </section>
     </>
