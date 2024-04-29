@@ -1,18 +1,18 @@
 import { ERoles, TMessageProps } from '../features/chat';
+import gptImage from '../assets/icons/chatgpt-icon.svg';
+import userImage from '../assets/icons/user-profile-icon.svg';
 
 const ChatMessage = ({ message }: { message: TMessageProps }) => {
-  const gptClass = message.role === ERoles.GPT;
+  const isGpt = message.role === ERoles.GPT;
 
   return (
-    <div className={gptClass ? 'bg-stone-400' : ''}>
-      <div className='flex max-w-[640px] p-[12px] px-[24px] mx-auto items-center'>
-        <div
-          className={`bg-white rounded-full w-[40px] h-[40px] flex justify-center items-center ${
-            gptClass && 'bg-[#0da37f]'
-          }`}
-        />
-        <div className='px-[40px]'>{message.content}</div>
-      </div>
+    <div
+      className={`flex items-center p-[12px] px-[24px] ${
+        isGpt ? 'bg-stone-400' : ''
+      }`}
+    >
+      <img src={isGpt ? gptImage : userImage} className='w-[40px] h-[40px]' />
+      <div className='px-[40px]'>{message.content}</div>
     </div>
   );
 };
