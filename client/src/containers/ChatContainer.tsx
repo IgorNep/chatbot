@@ -144,25 +144,32 @@ export const ChatContainer = () => {
           onClick={handleCreateNewChat}
           className='mb-6 mx-auto'
         />
-        <div className='mb-2'>Saved chats:</div>
-        <ul className='saved-chats'>
-          {data?.chats?.map((chat) => (
-            <li
-              key={chat.chatId}
-              className={cn('saved-chats-item', {
-                isActive: chat.chatId === currentChatId,
-              })}
-            >
-              <span onClick={() => handleSetCurrentChat(chat)}>
-                {new Date(chat.savedAt).toLocaleString()}
-              </span>
-              <span onClick={() => removeChat(chat.chatId)}>X</span>
-            </li>
-          ))}
-        </ul>
+        {!isEmpty(data?.chats) && (
+          <>
+            <div className='mb-2'>Saved chats:</div>
+            <ul className='saved-chats'>
+              {data?.chats?.map((chat) => (
+                <li
+                  key={chat.chatId}
+                  className={cn(
+                    'flex justify-between border-b-2 border-white hover:opacity-70 cursor-pointer',
+                    {
+                      'bg-gray-600': chat.chatId === currentChatId,
+                    },
+                  )}
+                >
+                  <span onClick={() => handleSetCurrentChat(chat)}>
+                    {new Date(chat.savedAt).toLocaleString()}
+                  </span>
+                  <span onClick={() => removeChat(chat.chatId)}>X</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </aside>
-      <section className='chatbox'>
-        <header className='appHeader'>
+      <section className='bg-[#343541] flex-1 relative'>
+        <header className='bg-[#4b5080] flex justify-end py-4 px-6'>
           <Button
             title='Clear current chat'
             onClick={handleCreateNewChat}
@@ -176,18 +183,18 @@ export const ChatContainer = () => {
             disabled={isEmpty(messages)}
           />
         </header>
-        <div className='chat-log'>
+        <div className='p-10 text-left max-h-[75%] overflow-auto'>
           {messages?.map((msg) => (
             <ChatMessage key={msg.id} message={msg} />
           ))}
           <div ref={bottomRefPanel}></div>
         </div>
-        <div className='chat-input-holder'>
+        <div className='absolute bottom-0 left-0 right-0'>
           <form onSubmit={handleSubmit}>
-            <div className='input-field'>
+            <div className='relative h-[60px] w-[80%] my-10 mx-auto'>
               <input
                 ref={inputRef}
-                className='chat-input-textarea'
+                className='bg-[#40414f] w-full h-full py-0 px-4 text-white text-sm border-none outline-none shadow-black'
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder='Type your message...'
