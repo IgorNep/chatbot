@@ -1,9 +1,8 @@
 import { ChatContainer } from './containers/ChatContainer';
-import './App.css';
 
 const App = () => {
   return (
-    <div className='App'>
+    <div className='flex bg-[#282c34] text-white text-center absolute inset-0'>
       <ChatContainer />
     </div>
   );
