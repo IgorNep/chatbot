@@ -64,7 +64,6 @@ app.post('/chats', async (req, res) => {
               savedAt: new Date(),
             },
           );
-          console.log(updatedChat);
           res.json({ msg: 'Chat has been saved' });
         }
       })
